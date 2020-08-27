@@ -1,5 +1,5 @@
 import itertools
-import os
+import os, sys
 import math
 import time
 from collections import defaultdict
@@ -369,6 +369,9 @@ class TrainingJob(Job):
                             torch.cuda.max_memory_allocated(self.device),
                         )
                     )
+
+            #print('emean: ', self.model.get_p_embedder().embeddings.weight.grad.mean().item())
+            # print('emean: ', self.model.get_o_embedder().embeddings.weight.grad.mean().item())
 
             # update parameters
             batch_optimizer_time = -time.time()
@@ -993,6 +996,7 @@ class TrainingJobNegativeSampling(TrainingJob):
 
                 # compute chunk loss (concluding the forward pass of the chunk)
                 forward_time -= time.time()
+
                 loss_value_torch = (
                     self.loss(scores, labels, num_negatives=num_samples) / batch_size
                 )

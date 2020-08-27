@@ -8,7 +8,7 @@ from kge.model import KgeEmbedder
 from kge.misc import round_to_points
 
 from typing import List
-
+import sys
 
 class LookupEmbedder(KgeEmbedder):
     def __init__(
@@ -116,9 +116,13 @@ class LookupEmbedder(KgeEmbedder):
                 ]
             else:
                 # weighted Lp regularization
+                btc = kwargs["batch"]["triples"][:, kwargs["slot"]]
+                print('\n--', kwargs["slot"], btc.size())
+
                 unique_ids, counts = torch.unique(
                     kwargs["batch"]["triples"][:, kwargs["slot"]], return_counts=True
                 )
+
                 parameters = self.embeddings(unique_ids)
                 if p % 2 == 1:
                     parameters = torch.abs(parameters)
